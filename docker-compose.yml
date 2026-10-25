@@ -1,0 +1,15 @@
+services:
+  enshrouded:
+    image: andrewsav/enshrouded
+    container_name: enshrouded
+    restart: unless-stopped
+    stop_signal: SIGINT # This is for graceful termination, do not change it, unless you know what you are doing
+    stop_grace_period: 90s # The server saves the world on shutdown, give it time to finish
+    #environment:
+    #  - PUID=1001
+    #  - PGID=1001
+    volumes:
+      - './server:/server'
+    #  - './wineprefix:/wineprefix-volume'
+    ports:
+      - '15637:15637/udp'
