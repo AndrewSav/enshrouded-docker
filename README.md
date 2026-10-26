@@ -1,4 +1,4 @@
-# Dockerized Enshrouded dedicated server in an Ubuntu 24.04 container with Wine
+# Dockerized Enshrouded dedicated server in an Ubuntu 24.04 container with GE-Proton
 
 [![GitHub Actions](https://github.com/AndrewSav/enshrouded-docker/actions/workflows/main.yml/badge.svg)](https://github.com/AndrewSav/enshrouded-docker/actions)
 [![Docker Image Version (latest semver)](https://img.shields.io/docker/v/andrewsav/enshrouded?sort=semver)](https://hub.docker.com/r/andrewsav/enshrouded/tags)
@@ -107,12 +107,6 @@ Detailed port forwarding guide is out of scope of this document, there are a lot
 `docker compose stop` and `docker compose down` send `SIGINT` to the server (see `stop_signal` in `docker-compose.yml`). The server treats it as Ctrl+C: it saves the world, logs off from Steam and exits, normally within a few seconds.
 
 If the server cannot reach Steam when it is stopped (e.g. Steam is down), it still saves the world, but then never exits. Docker kills it after `stop_grace_period`, which is 90 seconds in the supplied `docker-compose.yml`.
-
-### Why wine-devel and not wine-stable
-
-This image installs the development branch of wine (`wine-devel`) instead of `wine-stable`. Wine 11.0, the current stable release, crashes the server at the very end of every shutdown: Steam registers a device notification that wine 11.0 does not support, and at shutdown Steam unregisters the handle it never received, which wine 11.0 does not check. The world is already saved by then, but the server exits with an error code and leaves a crash dump in `./server/crash_dumps/` on every stop. Wine fixed this in 11.8 on the development branch, but the fix has not made it into a stable release yet.
-
-The intention is to go back to `wine-stable` once a stable release includes the fix (most likely wine 12.0).
 
 ### On accessing server files without sudo
 
